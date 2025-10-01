@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>出荷管理デモ</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <h1>📦 出荷管理デモ</h1>
+
+  <!-- デモ用QRコード表示 -->
+  <div class="box">
+    <h3>デモ用QRコード</h3>
+    <canvas id="qrcode"></canvas>
+    <p>@taaigsgh-the-decoder</p>
+  </div>
+
+  <!-- QRスキャン -->
+  <div class="box">
+    <h3>1. IDスキャン</h3>
+    <button id="startScanBtn">📷 カメラを開く</button>
+    <div id="reader" style="width:300px; margin-top:10px;"></div>
+    <div id="product"></div>
+  </div>
+
+  <!-- 入力フォーム -->
+  <div class="box">
+    <h3>2. 賞味期限 & 写真</h3>
+    <form id="shipmentForm">
+      <label>賞味期限:</label>
+      <input type="date" name="expiry_date" required><br><br>
+
+      <label>写真:</label>
+      <input type="file" name="photo" accept="image/*" capture="environment" required><br><br>
+
+      <button type="submit">確認待ちに送る</button>
+    </form>
+  </div>
+
+  <!-- 確認待ちリスト -->
+  <div class="box">
+    <h3>3. 確認待ちリスト</h3>
+    <div id="list"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    // デモ用QRコード生成
+    const canvas = document.getElementById("qrcode");
+    QRCode.toCanvas(canvas, "@taaigsgh-the-decoder", { width: 200 });
+  </script>
+</body>
+</html>
