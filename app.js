@@ -4,7 +4,6 @@ let html5QrCode = null;
 
 // QRスキャン成功時
 function onScanSuccess(decodedText) {
-  // 仮の商品情報
   productData = {
     id: decodedText,
     destination: "東京倉庫",
@@ -20,49 +19,28 @@ function onScanSuccess(decodedText) {
   `;
 }
 
-// ボタンクリックでカメラ起動
-document.getElementById("startScanBtn").addEventListener("click", () => {
-  Html5Qrcode.getCameras().then(cameras => {
-    if (cameras && cameras.length) {
-      let cameraId = cameras[cameras.length - 1]; // 背面カメラ
-      html5QrCode = new Html5Qrcode("reader");
-      html5QrCode.start(
-        cameraId.id,
-        { fps: 10, qrbox: 200 },
-        decodedText => onScanSuccess(decodedText)
-      );
-    } else {
+// カメラ起動ボタン
+document.getElementById("startScanBtn").addEventListener("click", async () => {
+  try {
+    const cameras = await Html5Qrcode.getCameras();
+    if (!cameras || cameras.length === 0) {
       alert("カメラが見つかりません");
+      return;
     }
-  }).catch(err => alert("カメラアクセスに失敗しました: " + err));
+    const cameraId = cameras[cameras.length - 1]; // 背面カメラ
+    html5QrCode = new Html5Qrcode("reader");
+    await html5QrCode.start(
+      cameraId.id,
+      { fps: 10, qrbox: 250 },
+      decodedText => onScanSuccess(decodedText)
+    );
+  } catch (err) {
+    alert("カメラ起動に失敗しました: " + err);
+  }
 });
 
-// フォーム送信処理
+// フォーム送信
 document.getElementById("shipmentForm").addEventListener("submit", e => {
   e.preventDefault();
   if (!productData) {
-    alert("先にIDスキャンしてください");
-    return;
-  }
-
-  const form = e.target;
-  const expiry = form.expiry_date.value;
-  const photoFile = form.photo.files[0];
-  const reader = new FileReader();
-  reader.onload = () => {
-    pendingList.push({ ...productData, expiry_date: expiry, photo_url: reader.result });
-    renderList();
-  };
-  reader.readAsDataURL(photoFile);
-  form.reset();
-});
-
-// 確認待ちリスト描画
-function renderList() {
-  document.getElementById("list").innerHTML = pendingList.map(item => `
-    <div class="item">
-      <b>${item.product_name}</b> / ${item.destination} / 賞味: ${item.expiry_date}<br>
-      <img src="${item.photo_url}">
-    </div>
-  `).join("");
-}
+    alert("先にIDスキャンしてください"
