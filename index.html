@@ -2,54 +2,57 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>出荷管理デモ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📦 出荷管理デモ</title>
   <link rel="stylesheet" href="style.css">
+  
   <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js" defer></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js" defer></script>
+  
   <script src="app.js" defer></script>
 </head>
 <body>
   <h1>📦 出荷管理デモ</h1>
 
-  <!-- デモ用QRコード表示 -->
-  <div class="box">
+  <div class="box demo-qr">
     <h3>デモ用QRコード</h3>
     <canvas id="qrcode"></canvas>
-    <p>@taaigsgh-the-decoder</p>
+    <p>↑このQRコードをスキャンしてください</p>
   </div>
 
-  <!-- QRスキャン -->
-  <div class="box">
+  <div class="box scan-section">
     <h3>1. IDスキャン</h3>
-    <button id="startScanBtn">📷 カメラを開く</button>
-    <div id="reader" style="width:300px; margin-top:10px;"></div>
-    <div id="product"></div>
+    <button id="startScanBtn" class="primary-btn">📷 カメラを開く</button>
+    <div id="reader"></div>
+    <div id="product-info" class="product-display">
+      </div>
   </div>
 
-  <!-- 入力フォーム -->
-  <div class="box">
-    <h3>2. 賞味期限 & 写真</h3>
+  <div class="box form-section">
+    <h3>2. 賞味期限 & 写真登録</h3>
     <form id="shipmentForm">
-      <label>賞味期限:</label>
-      <input type="date" name="expiry_date" required><br><br>
+      <div class="form-group">
+        <label for="expiry_date">賞味期限:</label>
+        <input type="date" id="expiry_date" name="expiry_date" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="photo">写真:</label>
+        <input type="file" id="photo" name="photo" accept="image/*" capture="environment" required>
+      </div>
 
-      <label>写真:</label>
-      <input type="file" name="photo" accept="image/*" capture="environment" required><br><br>
-
-      <button type="submit">確認待ちに送る</button>
+      <button type="submit" class="submit-btn" disabled>確認待ちに送る</button>
+      <p id="scan-required-message">※先にIDスキャンを完了させてください</p>
     </form>
   </div>
 
-  <!-- 確認待ちリスト -->
-  <div class="box">
+  <div class="box list-section">
     <h3>3. 確認待ちリスト</h3>
-    <div id="list"></div>
+    <div id="pending-list">
+      <p class="empty-message">登録された出荷データはありません。</p>
+    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script>
-    // デモ用QRコード生成
-    const canvas = document.getElementById("qrcode");
-    QRCode.toCanvas(canvas, "@taaigsgh-the-decoder", { width: 200 });
-  </script>
 </body>
 </html>
